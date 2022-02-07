@@ -5,7 +5,7 @@
 import UIKit
 
 class ListViewController: UITableViewController {
-	var items = [Any]()
+	var items = [ItemViewModel]()
 	
 	var retryCount = 0
 	var maxRetryCount = 0
@@ -107,7 +107,19 @@ class ListViewController: UITableViewController {
 				}
 			}
 			
-			self.items = filteredItems
+            self.items = filteredItems.map { item in
+                ItemViewModel(item, longDateStyle: longDateStyle, selection: { [weak self] in
+                    if let friend = item as? Friend {
+                        self?.selectFriend(friend)
+                    } else if let card = item as? Card {
+                        self?.selectCard(card)
+                    } else if let transfer = item as? Transfer {
+                        self?.selectTransfer(transfer)
+                    } else {
+                        fatalError("unknown item: \(item)")
+                    }
+                })
+            }
 			self.refreshControl?.endRefreshing()
 			self.tableView.reloadData()
 			
@@ -126,7 +138,11 @@ class ListViewController: UITableViewController {
 					DispatchQueue.mainAsyncIfNeeded {
 						switch result {
 						case let .success(items):
-							self?.items = items
+                            self?.items = items.map { item in
+                                ItemViewModel(friend:item, selection: { [weak self] in
+                                    self?.selectFriend(item)
+                                })
+                            }
 							self?.tableView.reloadData()
 							
 						case let .failure(error):
@@ -153,22 +169,13 @@ class ListViewController: UITableViewController {
 	override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
 		let item = items[indexPath.row]
 		let cell = tableView.dequeueReusableCell(withIdentifier: "ItemCell") ?? UITableViewCell(style: .subtitle, reuseIdentifier: "ItemCell")
-        let vm = ItemViewModel(item, longDateStyle: longDateStyle)
-		cell.configure(vm)
+		cell.configure(item)
 		return cell
 	}
 	
 	override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
 		let item = items[indexPath.row]
-		if let friend = item as? Friend {
-            selectFriend(friend)
-		} else if let card = item as? Card {
-			selectCard(card)
-		} else if let transfer = item as? Transfer {
-			selectTransfer(transfer)
-		} else {
-			fatalError("unknown item: \(item)")
-		}
+        item.select()
 	}
 	
     func selectFriend(_ friend: Friend) {
@@ -193,20 +200,38 @@ class ListViewController: UITableViewController {
 struct ItemViewModel {
     let title: String
     let subtitle: String
+    let select: () -> Void
     
-    init(_ item: Any, longDateStyle: Bool) {
+    init(_ item: Any, longDateStyle: Bool, selection: @escaping () -> Void) {
         if let friend = item as? Friend {
-            self.init(friend: friend)
+            self.init(friend: friend, selection: selection)
         } else if let card = item as? Card {
-            self.init(card: card)
+            self.init(card: card, selection: selection)
         } else if let transfer = item as? Transfer {
-            self.init(transfer: transfer, longDateStyle: longDateStyle)
+            self.init(transfer: transfer, longDateStyle: longDateStyle, selection: selection)
         } else {
             fatalError("unknown item: \(item)")
         }
     }
+}
+
+extension ItemViewModel {
+    init(friend: Friend, selection: @escaping () -> Void) {
+        title = friend.name
+        subtitle = friend.phone
+        select = selection
+    }
     
-    init(transfer: Transfer, longDateStyle: Bool) {
+}
+extension ItemViewModel {
+    init(card: Card, selection: @escaping () -> Void) {
+        title = card.number
+        subtitle = card.holder
+        select = selection
+    }
+}
+extension ItemViewModel {
+    init(transfer: Transfer, longDateStyle: Bool, selection: @escaping () -> Void) {
         let numberFormatter = Formatters.number
         numberFormatter.numberStyle = .currency
         numberFormatter.currencyCode = transfer.currencyCode
@@ -224,26 +249,7 @@ struct ItemViewModel {
             dateFormatter.timeStyle = .short
             subtitle = "Received from: \(transfer.sender) on \(dateFormatter.string(from: transfer.date))"
         }
-    }
-}
-
-extension ItemViewModel {
-    init(friend: Friend) {
-        title = friend.name
-        subtitle = friend.phone
-    }
-    
-}
-extension ItemViewModel {
-    init(card: Card) {
-        title = card.number
-        subtitle = card.holder
-    }
-}
-extension ItemViewModel {
-    init(friend: Friend, longDateStyle: Bool) {
-        title = friend.name
-        subtitle = friend.phone
+        select = selection
     }
 }
 
