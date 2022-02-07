@@ -170,23 +170,6 @@ class ListViewController: UITableViewController {
         item.select()
 	}
 	
-    func selectFriend(_ friend: Friend) {
-        let vc = FriendDetailsViewController()
-        vc.friend = friend
-        show(vc, sender: self)
-    }
-    
-    func selectCard(_ card: Card) {
-        let vc = CardDetailsViewController()
-        vc.card = card
-        show(vc, sender: self)
-    }
-    
-    func selectTransfer(_ transfer: Transfer) {
-        let vc = TransferDetailsViewController()
-        vc.transfer = transfer
-        show(vc, sender: self)
-    }
 }
 
 struct ItemViewModel {
@@ -253,6 +236,25 @@ extension UITableViewCell {
 }
 
 extension UIViewController {
+    
+    func selectFriend(_ friend: Friend) {
+        let vc = FriendDetailsViewController()
+        vc.friend = friend
+        show(vc, sender: self)
+    }
+    
+    func selectCard(_ card: Card) {
+        let vc = CardDetailsViewController()
+        vc.card = card
+        show(vc, sender: self)
+    }
+    
+    func selectTransfer(_ transfer: Transfer) {
+        let vc = TransferDetailsViewController()
+        vc.transfer = transfer
+        show(vc, sender: self)
+    }
+    
     @objc func addCard() {
         show(AddCardViewController(), sender: self)
     }
@@ -274,4 +276,5 @@ extension UIViewController {
         alert.addAction(UIAlertAction(title: "Ok", style: .default))
         self.showDetailViewController(alert, sender: self)
     }
+    
 }
