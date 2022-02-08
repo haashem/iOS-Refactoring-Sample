@@ -10,19 +10,7 @@ protocol ItemsService {
 
 class ListViewController: UITableViewController {
 	var items = [ItemViewModel]()
-	
     var service: ItemsService?
-    
-	var retryCount = 0
-	var maxRetryCount = 0
-	var shouldRetry = false
-	
-	var longDateStyle = false
-	
-	var fromReceivedTransfersScreen = false
-	var fromSentTransfersScreen = false
-	var fromCardsScreen = false
-	var fromFriendsScreen = false
 	
 	override func viewDidLoad() {
 		super.viewDidLoad()
@@ -47,43 +35,14 @@ class ListViewController: UITableViewController {
 	private func handleAPIResult(_ result: Result<[ItemViewModel], Error>) {
 		switch result {
 		case let .success(items):
-			self.retryCount = 0
+			
             self.items = items
 			self.refreshControl?.endRefreshing()
 			self.tableView.reloadData()
 			
 		case let .failure(error):
-			if shouldRetry && retryCount < maxRetryCount {
-				retryCount += 1
-				
-				refresh()
-				return
-			}
-			
-			retryCount = 0
-			
-			if fromFriendsScreen && User.shared?.isPremium == true {
-				(UIApplication.shared.connectedScenes.first?.delegate as! SceneDelegate).cache.loadFriends { [weak self] result in
-					DispatchQueue.mainAsyncIfNeeded {
-						switch result {
-						case let .success(items):
-                            self?.items = items.map { item in
-                                ItemViewModel(friend:item, selection: { [weak self] in
-                                    self?.selectFriend(item)
-                                })
-                            }
-							self?.tableView.reloadData()
-							
-						case let .failure(error):
-                            self?.show(error: error)
-						}
-						self?.refreshControl?.endRefreshing()
-					}
-				}
-			} else {
-                self.show(error: error)
-				self.refreshControl?.endRefreshing()
-			}
+            self.show(error: error)
+            self.refreshControl?.endRefreshing()
 		}
 	}
    
@@ -109,22 +68,18 @@ class ListViewController: UITableViewController {
 	
 }
 
+extension UITableViewCell {
+    func configure(_ vm: ItemViewModel) {
+        textLabel?.text = vm.title
+        detailTextLabel?.text = vm.subtitle
+    }
+}
+
 struct ItemViewModel {
     let title: String
     let subtitle: String
     let select: () -> Void
     
-    init(_ item: Any, longDateStyle: Bool, selection: @escaping () -> Void) {
-        if let friend = item as? Friend {
-            self.init(friend: friend, selection: selection)
-        } else if let card = item as? Card {
-            self.init(card: card, selection: selection)
-        } else if let transfer = item as? Transfer {
-            self.init(transfer: transfer, longDateStyle: longDateStyle, selection: selection)
-        } else {
-            fatalError("unknown item: \(item)")
-        }
-    }
 }
 
 extension ItemViewModel {
@@ -163,13 +118,6 @@ extension ItemViewModel {
         }
         select = selection
     }
-}
-
-extension UITableViewCell {
-	func configure(_ vm: ItemViewModel) {
-        textLabel?.text = vm.title
-        detailTextLabel?.text = vm.subtitle
-	}
 }
 
 extension UIViewController {
