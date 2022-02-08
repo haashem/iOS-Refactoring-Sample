@@ -43,6 +43,8 @@
 		08927BD4268618AC009195BD /* User.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08927BCA268618AC009195BD /* User.swift */; };
 		08927BD5268618AC009195BD /* FriendsAPI.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08927BCB268618AC009195BD /* FriendsAPI.swift */; };
 		08927BD6268618AC009195BD /* NotImplementedViewControllers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08927BCC268618AC009195BD /* NotImplementedViewControllers.swift */; };
+		14FC882827B2C49F009B12D9 /* ItemViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 14FC882727B2C49F009B12D9 /* ItemViewModel.swift */; };
+		14FC882A27B2C4E2009B12D9 /* ItemViewModel+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 14FC882927B2C4E2009B12D9 /* ItemViewModel+Extensions.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -96,6 +98,8 @@
 		08927BCA268618AC009195BD /* User.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = User.swift; sourceTree = "<group>"; };
 		08927BCB268618AC009195BD /* FriendsAPI.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FriendsAPI.swift; sourceTree = "<group>"; };
 		08927BCC268618AC009195BD /* NotImplementedViewControllers.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NotImplementedViewControllers.swift; sourceTree = "<group>"; };
+		14FC882727B2C49F009B12D9 /* ItemViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ItemViewModel.swift; sourceTree = "<group>"; };
+		14FC882927B2C4E2009B12D9 /* ItemViewModel+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ItemViewModel+Extensions.swift"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -222,6 +226,7 @@
 				08927B942686183A009195BD /* SceneDelegate.swift */,
 				08040FFB268B4C1D0062A93B /* MainTabBarController.swift */,
 				08927BC5268618AC009195BD /* ListViewController.swift */,
+				14FC882627B2C48F009B12D9 /* ItemViewModel */,
 				08927BC3268618AC009195BD /* SegmentNavigationViewController.swift */,
 				08927BCC268618AC009195BD /* NotImplementedViewControllers.swift */,
 				080833DF268F609C00A8099A /* Helpers.swift */,
@@ -256,6 +261,15 @@
 				08927BA02686183B009195BD /* Info.plist */,
 			);
 			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+		14FC882627B2C48F009B12D9 /* ItemViewModel */ = {
+			isa = PBXGroup;
+			children = (
+				14FC882727B2C49F009B12D9 /* ItemViewModel.swift */,
+				14FC882927B2C4E2009B12D9 /* ItemViewModel+Extensions.swift */,
+			);
+			name = ItemViewModel;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -360,7 +374,9 @@
 			files = (
 				08927B932686183A009195BD /* AppDelegate.swift in Sources */,
 				08927BCF268618AC009195BD /* ListViewController.swift in Sources */,
+				14FC882A27B2C4E2009B12D9 /* ItemViewModel+Extensions.swift in Sources */,
 				08040FFC268B4C1D0062A93B /* MainTabBarController.swift in Sources */,
+				14FC882827B2C49F009B12D9 /* ItemViewModel.swift in Sources */,
 				08927BD0268618AC009195BD /* CardAPI.swift in Sources */,
 				08927BD6268618AC009195BD /* NotImplementedViewControllers.swift in Sources */,
 				08927BD5268618AC009195BD /* FriendsAPI.swift in Sources */,
